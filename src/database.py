@@ -22,7 +22,9 @@ def criar_usuario(email, nome, senha):
     
     try:
         # PREENCHA AQUI - QUAL O COMANDO CRIAR UM NOVO USUÁRIO
-        cursor.execute('DIGITE AQUI O COMANDO PARA INSERIR UM NOVO USUÁRIO')
+        cursor.execute('insert into usuarios(email, nome, senha) VALUES (?, ?, ?)',
+                       (email, nome, senha))
+        
         conexao.commit()
         return True
     except sqlite3.IntegrityError:
@@ -48,22 +50,51 @@ def criar_projeto(id_usuario,destino,data_prevista,status,imagem,gastos,dinheiro
 def buscar_viagens(id_usuario):
     conexao = conectar_banco()
     cursor = conexao.cursor()
-    # PREENCHA AQUI, BUSCAR TODAS AS VIAGENS ordem: destino, data prevista, status, imagem
-    cursor.execute("DIGITE AQUI O COMANDO PARA BUSCAR AS VIAGENS")
+    # PREENCHA AQUI, BUSCAR TODAS AS VIAGENS ordem: destino, data_prevista, status, imagem
+    cursor.execute('''SELECT destino, data_prevista, status, imagem FROM projetos_de_viagem
+                   WHERE id_usuario = ?''', (id_usuario,))
     viagens = cursor.fetchall()
     conexao.close()
 
     return viagens
 
+def apagar_viagem (id_viagem):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('DELETE FROM projetos_de_viagem WHERE id = ?', id_viagem)
+        
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+
+def mostrar_id_viagens (id_email):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        cursor.execute('SELECT * FROM projetos_de_viagem WHERE id_usuario = ?', (id_email,))
+        conexao.commit()
+        viagens = cursor.fetchall()
+        return viagens
+    
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+
 if __name__ == '__main__': 
     conexao = conectar_banco()
-    cursos = conexao.cursor()
-    usuarios = cursos.execute("select * from projetos_de_viagem where id_usuario = ?",("Gustavo@gmail.com"))
-    for linha in cursos.fetchall():
-        print (linha)
-    # criar_projeto('Gustavo@gmail.com', 'Parana', '23/12/2026', 'Não começou', 'imagem.png',300 ,150)
-    # criar_projeto('Gustavo@gmail.com', 'Paris', '19/08/2026', 'Não começou', 'imagem.png',5000 ,3000)
-    # criar_projeto('geovani@gmail.com', 'Paris', '19/08/2026', 'Não começou', 'imagem.png',5000 ,3000)
+    criar_tabelas()
+    id_viagens = mostrar_id_viagens("charuri@email.com")
+    print(id_viagens)
+
+    apagar_viagem("1")
+    
 
 
     
