@@ -32,6 +32,58 @@ def criar_usuario(email, nome, senha):
     finally:
         conexao.close()
 
+def excluir_usuario(email):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        # Apaga o usuário da tabela usuários
+        cursor.execute('delete from usuarios where email = ?',
+                       (email,))
+        
+        # Apaga todas as viagens criadas por ele
+        cursor.execute('delete from projetos_de_viagem where id_usuario = ?',
+                       (email,))
+        
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+
+def mudar_nome_usuario (email, novo_nome):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        # Atualiza o nome do usuário da tabela usuários
+        cursor.execute('UPDATE usuarios SET nome = ? where email = ?',
+                       (novo_nome, email,))
+               
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+
+def mudar_senha_usuario (email, nova_senha):
+    conexao = conectar_banco()
+    cursor = conexao.cursor()
+    
+    try:
+        # Atualiza a senha do usuário da tabela usuários
+        cursor.execute('UPDATE usuarios SET senha = ? where email = ?',
+                       (nova_senha, email,))
+               
+        conexao.commit()
+        return True
+    except sqlite3.IntegrityError:
+        return False
+    finally:
+        conexao.close()
+
 def criar_projeto(id_usuario,destino,data_prevista,status,imagem,gastos,dinheiro_guardado):
     conexao = conectar_banco()
     cursor = conexao.cursor()
@@ -89,11 +141,10 @@ def mostrar_id_viagens (id_email):
 
 if __name__ == '__main__': 
     conexao = conectar_banco()
-    criar_tabelas()
-    id_viagens = mostrar_id_viagens("charuri@email.com")
-    print(id_viagens)
+    
+    #mudar_nome_usuario("charuri@email.com", "Dr. Celso")
+    mudar_senha_usuario("charuri@email.com", "321")
 
-    apagar_viagem("1")
     
 
 
