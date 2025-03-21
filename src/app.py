@@ -84,7 +84,6 @@ def nova_viagem():
     if 'usuario' not in session:
         return redirect(url_for('login'))
     
-
     if request.method == 'POST':
         destino = request.form['destino']
         data_prevista = request.form['data_prevista']
@@ -97,6 +96,16 @@ def nova_viagem():
         flash("Viagem criada com sucesso!", "success")
         return redirect(url_for('home'))
     return render_template('nova_viagem.html')
+
+# Rota para excluir uma viagem
+@app.route('/excluir-viagem', methods=['POST'])
+def excluir_viagem():
+    viagem_id = request.form.get('viagem_id')  # Obtém o ID da viagem do formulário
+
+    database.apagar_viagem(viagem_id)  # Passa o ID para a função que exclui a viagem
+
+    return redirect(url_for('home'))
+
 
 if __name__ == '__main__':
     app.run(debug=True) 

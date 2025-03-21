@@ -36,6 +36,13 @@
                         <h5 class="card-title">{{ viagem[0] }}</h5>
                         <p class="card-text">Data Prevista: {{ viagem[1] }}</p>
                         <p class="card-text">Status: {{ viagem[2] }}</p>
+                        
+                        <!-- Formulário para excluir a viagem -->
+                        <form action="{{ url_for('excluir_viagem') }}" method="POST">
+                            <input type="hidden" name="viagem_id" value="{{ viagem[4] }}"> <!-- ID da viagem -->
+                            <button type="submit" class="btn btn-danger">Excluir</button>
+                        </form>
+                        
                     </div>
                 </div>
             </div>
