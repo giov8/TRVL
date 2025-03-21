@@ -100,7 +100,7 @@ def nova_viagem():
 # Rota para excluir uma viagem
 @app.route('/excluir-viagem', methods=['POST'])
 def excluir_viagem():
-    viagem_id = request.form.get('viagem_id')  # Obtém o ID da viagem do formulário
+     viagem_id = request.form.get('viagem_id')  # Obtém o ID da viagem do formulário
 
     database.apagar_viagem(viagem_id)  # Passa o ID para a função que exclui a viagem
 
